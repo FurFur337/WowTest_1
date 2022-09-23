@@ -1,5 +1,0 @@
-﻿  memory.cpp
-C:\Users\MehMeh\source\repos\WowTask\WowTask\memory.cpp(5,102): error C2572: CMemory::PatternScan: переопределение аргумента по умолчанию: параметр 1
-C:\Users\MehMeh\source\repos\WowTask\WowTask\memory.h(12): message : см. объявление "CMemory::PatternScan"
-  WowTask.cpp
-  Создание кода...
