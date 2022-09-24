@@ -1,5 +1,6 @@
 #include "game.h"
 #include "memory.h"
+#include "parser.h"
 
 #include <iostream>
 
@@ -12,6 +13,9 @@ CGame::CGame(std::wstring procName)
 
 void CGame::InitOffsets()
 {
+  CXmlParser parser("dep/db/Patterns.xml");
+  std::list<OffsetSettings> settings = parser.ParseAll();
+
   SIZE_T numBytes = 0;
   DWORD buffer = 0;
 

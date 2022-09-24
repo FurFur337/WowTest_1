@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <thread>
 #include <chrono>
+#include <string>
 
 #include "memory.h"
 #include "game.h"

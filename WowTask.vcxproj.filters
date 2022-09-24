@@ -27,12 +27,24 @@
     <ClCompile Include="dep\pugixml\pugixml.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="parser.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="dep\pugixml\pugiconfig.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="offset.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
