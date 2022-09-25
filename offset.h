@@ -16,4 +16,5 @@ struct OffsetSettings : Offset
   uintptr_t _rel_size;
   uintptr_t _rel_offs;
   uintptr_t _sub_bytes;
+  bool _rel_call;
 };

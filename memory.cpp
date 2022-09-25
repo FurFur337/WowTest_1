@@ -100,10 +100,16 @@ uintptr_t CMemory::FullPatternScan(HANDLE procHandle, MODULEENTRY32 modEntry, st
 		std::vector<BYTE> buffer(4096);
 
 		std::string bytesPattern;
+		char byteTemp;
 		// convert hexPattern string to string bytes
 		for (UINT i = 0; i < hexPattern.length(); i += 3)
 		{
-				bytesPattern.push_back((char)std::strtol(hexPattern.substr(i, 2).c_str(), NULL, 16));
+				byteTemp = (char)std::strtol(hexPattern.substr(i, 2).c_str(), NULL, 16);
+
+				if (byteTemp == '?')
+						byteTemp = 0x00;
+
+				bytesPattern.push_back(byteTemp);
 		}
 
 		while (Chunk < End)

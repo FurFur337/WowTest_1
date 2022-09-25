@@ -13,10 +13,9 @@ CGame::CGame(std::wstring procName)
 
 void CGame::InitOffsets()
 {
-  CXmlParser parser("dep/db/Patterns.xml");
+  CXmlParser parser("dep/db/Test.xml");
   std::list<OffsetSettings> settings = parser.ParseAll();
 
-  uintptr_t temp;
   DWORD dw_temp;
 
   for (auto& it : settings)
@@ -27,7 +26,15 @@ void CGame::InitOffsets()
     if (it._add_bytes)
     {
       ReadProcessMemory(this->_procHandle, (void*)it._offset, &dw_temp, sizeof(DWORD), NULL);
-      it._offset += dw_temp + it._rel_size + it._rel_offs - it._sub_bytes;
+
+      if (!it._rel_call)
+      {
+        it._offset += dw_temp + it._rel_size + it._rel_offs - it._sub_bytes;
+      }
+      else
+      {
+        it._offset += static_cast<long>(dw_temp) + it._rel_size + it._rel_offs - it._sub_bytes;
+      }
     }
 
     std::cout << it._name << ": 0x" << std::hex << it._offset - (uintptr_t)this->_modEntry.modBaseAddr << std::endl;
