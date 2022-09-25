@@ -16,6 +16,23 @@ void CGame::InitOffsets()
   CXmlParser parser("dep/db/Patterns.xml");
   std::list<OffsetSettings> settings = parser.ParseAll();
 
+  uintptr_t temp;
+  DWORD dw_temp;
+
+  for (auto& it : settings)
+  {
+    it._offset = CMemory::FullPatternScan(this->_procHandle, this->_modEntry, it._pattern, "", it._add_bytes);
+
+    // has Modifiers
+    if (it._add_bytes)
+    {
+      ReadProcessMemory(this->_procHandle, (void*)it._offset, &dw_temp, sizeof(DWORD), NULL);
+      it._offset += dw_temp + it._rel_size + it._rel_offs - it._sub_bytes;
+    }
+
+    std::cout << it._name << ": 0x" << std::hex << it._offset - (uintptr_t)this->_modEntry.modBaseAddr << std::endl;
+  }
+
   SIZE_T numBytes = 0;
   DWORD buffer = 0;
 

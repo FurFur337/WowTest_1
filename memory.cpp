@@ -1,6 +1,7 @@
 #include "memory.h"
 
 #include <vector>
+#include <iostream>
 
 DWORD CMemory::GetProcessId(std::wstring procName)
 {
@@ -63,9 +64,9 @@ MODULEENTRY32 CMemory::GetModuleEntry(DWORD procId, std::wstring moduleName)
 		return modEntry;
 }
 
-uintptr_t CMemory::ChunkPatternScan(byte* base, size_t size, std::string pattern, std::string mask) {
+uintptr_t CMemory::ChunkPatternScan(byte* base, size_t size, std::string bytePattern, std::string mask) {
 
-		size_t patternLength = mask.length();
+		size_t patternLength = bytePattern.length();
 		bool found = false;
 
 		for (uintptr_t i = 0; i < size - patternLength; i++)
@@ -74,7 +75,7 @@ uintptr_t CMemory::ChunkPatternScan(byte* base, size_t size, std::string pattern
 
 				for (uintptr_t j = 0; j < patternLength; j++)
 				{
-						if (mask[j] != '?' && pattern[j] != (char)base[i + j])
+						if (bytePattern[j] != 0x00 && bytePattern[j] != (char)base[i + j])
 						{
 								found = false;
 								break;
@@ -88,7 +89,7 @@ uintptr_t CMemory::ChunkPatternScan(byte* base, size_t size, std::string pattern
 		return 0;
 }
 
-uintptr_t CMemory::FullPatternScan(HANDLE procHandle, MODULEENTRY32 modEntry, std::string pattern, std::string mask, unsigned int add_bytes)
+uintptr_t CMemory::FullPatternScan(HANDLE procHandle, MODULEENTRY32 modEntry, std::string hexPattern, std::string mask, unsigned int add_bytes)
 {
 
 		uintptr_t Start = (uintptr_t)modEntry.modBaseAddr;
@@ -98,6 +99,13 @@ uintptr_t CMemory::FullPatternScan(HANDLE procHandle, MODULEENTRY32 modEntry, st
 		SIZE_T bytesRead;
 		std::vector<BYTE> buffer(4096);
 
+		std::string bytesPattern;
+		// convert hexPattern string to string bytes
+		for (UINT i = 0; i < hexPattern.length(); i += 3)
+		{
+				bytesPattern.push_back((char)std::strtol(hexPattern.substr(i, 2).c_str(), NULL, 16));
+		}
+
 		while (Chunk < End)
 		{
 				ReadProcessMemory(procHandle, (void*)Chunk, &buffer.front(), 4096, &bytesRead);
@@ -105,7 +113,7 @@ uintptr_t CMemory::FullPatternScan(HANDLE procHandle, MODULEENTRY32 modEntry, st
 				if (bytesRead == 0)
 						return 0;
 
-				uintptr_t InternalAddress = ChunkPatternScan(&buffer.front(), bytesRead, pattern, mask);
+				uintptr_t InternalAddress = ChunkPatternScan(&buffer.front(), bytesRead, bytesPattern, mask);
 
 				if (InternalAddress != 0)
 				{
